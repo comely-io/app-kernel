@@ -1,0 +1,33 @@
+{
+  "name": "comely-io/app-kernel",
+  "description": "Kernel for Comely Apps",
+  "type": "library",
+  "homepage": "https://github.com/comely-io/app-kernel",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Furqan A. Siddiqui",
+      "email": "hello@furqansiddiqui.com",
+      "homepage": "https://www.furqansiddiqui.com",
+      "role": "Author"
+    }
+  ],
+  "require": {
+    "php": "^7.1",
+    "ext-pdo": "*",
+    "comely-io/data-types": "^1.0.23",
+    "comely-io/utils": "^1.0.10",
+    "comely-io/filesystem": "^1.0.10",
+    "comely-io/db-orm": "^1.0.10",
+    "comely-io/http": "^1.0.10",
+    "comely-io/yaml": "^1.0.10"
+  },
+  "autoload": {
+    "psr-4": {
+      "Comely\\App\\": [
+        "src"
+      ]
+    }
+  },
+  "minimum-stability": "dev"
+}
