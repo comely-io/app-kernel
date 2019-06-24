@@ -192,7 +192,7 @@ class Screen
                 <div class="row">
                     <div class="col text-right">
                         <h5 class="font-weight-light">
-                            <a href="https://github.com/comelyio/" target="_blank" class="info">Comely App Kernel
+                            <a href="https://github.com/comely-io/app-kernel" target="_blank" class="info">Comely App Kernel
                                 v<?php print $this->version; ?></a>
                         </h5>
                     </div>
@@ -286,7 +286,7 @@ class Screen
                             </div>
                             <ul class="list-group">
                                 <li class="list-group-item">
-                                    <a href="https://github.com/comelyio/app-kernel" target="_blank">
+                                    <a href="https://github.com/comely-io/app-kernel" target="_blank">
                                         <i class="icon ion-social-github"></i>
                                         Comely App Kernel
                                     </a>
@@ -296,7 +296,7 @@ class Screen
                                     list($repo, $version) = $component;
                                     ?>
                                     <li class="list-group-item">
-                                        <a href="https://github.com/comelyio/<?php print $repo; ?>" target="_blank">
+                                        <a href="https://github.com/comely-io/<?php print $repo; ?>" target="_blank">
                                             <i class="icon ion-social-github"></i>
                                             <?php print $lib; ?>
                                         </a>
