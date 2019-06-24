@@ -230,11 +230,17 @@ abstract class AppKernel implements \Serializable
                 $cachedConfig = unserialize(base64_decode($cachedConfig), [
                     "allowed_classes" => [
                         'Comely\App\Config',
-                        'Comely\App\Config\SiteConfig',
-                        'Comely\App\Config\DbConfig',
-                        'Comely\App\Config\ServicesConfig',
                         'Comely\App\Config\CacheServiceConfig',
+                        'Comely\App\Config\CipherConfig',
+                        'Comely\App\Config\DbConfig',
+                        'Comely\App\Config\HttpCookiesConfig',
                         'Comely\App\Config\HttpServiceConfig',
+                        'Comely\App\Config\MailerConfig',
+                        'Comely\App\Config\MailerSMTPConfig',
+                        'Comely\App\Config\ServicesConfig',
+                        'Comely\App\Config\SessionsServiceConfig',
+                        'Comely\App\Config\SiteConfig',
+                        'Comely\App\Config\TranslatorServiceConfig',
                     ]
                 ]);
 
