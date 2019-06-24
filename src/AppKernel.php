@@ -91,6 +91,10 @@ abstract class AppKernel implements \Serializable
      */
     public static function Bootstrap(Bootstrapper $bs)
     {
+        if (self::$instance) {
+            throw new \RuntimeException('App kernel has already been bootstrapped; use getInstance method instead');
+        }
+
         self::$instance = new static($bs);
         return self::$instance;
     }
@@ -102,7 +106,7 @@ abstract class AppKernel implements \Serializable
      * @throws Exception\AppConfigException
      * @throws Exception\AppDirectoryException
      */
-    public function __construct(Bootstrapper $bootstrapper)
+    protected function __construct(Bootstrapper $bootstrapper)
     {
         // Environment variable
         $this->dev = $bootstrapper->dev;
