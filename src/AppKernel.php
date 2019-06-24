@@ -43,6 +43,7 @@ abstract class AppKernel implements \Serializable
     protected const DIR_LOGS = null;
     protected const DIR_SESSIONS = null;
 
+    /** @var static */
     private static $instance;
 
     /** @var bool */
@@ -67,13 +68,28 @@ abstract class AppKernel implements \Serializable
     use NotCloneableTrait;
     use NotSerializableTrait;
 
-    public function getInstance(): self
+    /**
+     * @return AppKernel
+     */
+    public function getInstance()
     {
         if (!static::$instance) {
             return self::$instance;
         }
 
         throw new \RuntimeException('App kernel has not been bootstrapped');
+    }
+
+    /**
+     * @param Bootstrapper $bs
+     * @return AppKernel
+     * @throws AppBootstrapException
+     * @throws AppConfigException
+     * @throws Exception\AppDirectoryException
+     */
+    public static function Bootstrap(Bootstrapper $bs)
+    {
+        return new static($bs);
     }
 
     /**
