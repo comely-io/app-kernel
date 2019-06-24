@@ -10,7 +10,7 @@
  * https://github.com/comely-io/app-kernel/blob/master/LICENSE
  */
 
-declare(strict_typest=1);
+declare(strict_types=1);
 
 namespace Comely\App\Config;
 

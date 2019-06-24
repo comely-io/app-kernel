@@ -72,7 +72,7 @@ class CacheServiceConfig implements ObjectMapperInterface
      */
     public function objectMapperProps(ObjectMapper $objectMapper): void
     {
-        $objectMapper->prop("engine")->dataTypes("string")->validate(function ($engine) {
+        $objectMapper->prop("engine")->nullable()->dataTypes("string")->validate(function ($engine) {
             try {
                 return Validator::String($engine)->lowerCase()->inArray(["redis", "memcached"])->validate();
             } catch (NotInArrayException $e) {
