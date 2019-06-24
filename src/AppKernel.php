@@ -75,7 +75,7 @@ abstract class AppKernel implements \Serializable
      */
     public static function getInstance()
     {
-        if (!static::$instance) {
+        if (!self::$instance) {
             return self::$instance;
         }
 
