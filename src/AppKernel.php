@@ -91,7 +91,8 @@ abstract class AppKernel implements \Serializable
      */
     public static function Bootstrap(Bootstrapper $bs)
     {
-        return new static($bs);
+        self::$instance = new static($bs);
+        return self::$instance;
     }
 
     /**
