@@ -23,19 +23,24 @@ use Comely\Utils\Validator\Validator;
 /**
  * Class DbConfig
  * @package Comely\App\Config
+ * @property-read string $driver
+ * @property-read string $host
+ * @property-read string $name
+ * @property-read null|string $username
+ * @property-read null|string $password
  */
 class DbConfig implements ObjectMapperInterface
 {
     /** @var string */
-    public $driver;
+    protected $driver;
     /** @var string */
-    public $host;
+    protected $host;
     /** @var string */
-    public $name;
-    /** @var string */
-    public $username;
+    protected $name;
     /** @var null|string */
-    public $password;
+    protected $username;
+    /** @var null|string */
+    protected $password;
 
     /**
      * DbConfig constructor.
@@ -46,6 +51,24 @@ class DbConfig implements ObjectMapperInterface
     {
         $objectMapper = new ObjectMapper($this);
         $objectMapper->map($db);
+    }
+
+    /**
+     * @param string $prop
+     * @return mixed
+     */
+    public function __get(string $prop)
+    {
+        switch ($prop) {
+            case "driver":
+            case "host":
+            case "name":
+            case "username":
+            case "password":
+                return $this->$prop;
+        }
+
+        throw new \DomainException('Cannot get value of inaccessible property');
     }
 
     /**
@@ -76,7 +99,7 @@ class DbConfig implements ObjectMapperInterface
             return Validator::String($value)->match('/^\w+$/')->validate();
         });
 
-        $objectMapper->prop("username")->dataTypes("string")->validate(function ($value) {
+        $objectMapper->prop("username")->dataTypes("string")->nullable()->validate(function ($value) {
             return Validator::String($value)->match('/^\w+$/')->validate();
         });
 

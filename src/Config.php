@@ -16,7 +16,7 @@ namespace Comely\App;
 
 use Comely\App\Config\DbConfig;
 use Comely\App\Config\ServicesConfig;
-use Comely\App\Config\Site;
+use Comely\App\Config\SiteConfig;
 use Comely\App\Exception\AppConfigException;
 use Comely\Utils\OOP\ObjectMapper\Exception\ObjectMapperException;
 use Comely\Yaml\Exception\YamlException;
@@ -25,6 +25,8 @@ use Comely\Yaml\Yaml;
 /**
  * Class Config
  * @package Comely\App
+ * @property-read string $env
+ * @property-read string $timeZone
  */
 class Config
 {
@@ -32,7 +34,7 @@ class Config
     private $env;
     /** @var string */
     private $timeZone;
-    /** @var Site */
+    /** @var SiteConfig */
     private $site;
     /** @var array */
     private $dbs;
@@ -79,7 +81,7 @@ class Config
         }
 
         try {
-            $this->site = new Site($config["site"] ?? null);
+            $this->site = new SiteConfig($config["site"] ?? null);
         } catch (ObjectMapperException $e) {
             throw new AppConfigException($e->getMessage());
         }
@@ -111,25 +113,42 @@ class Config
 
         // Services
         $servicesConfig = $config["services"] ?? [];
-        if (is_array($servicesConfig)) {
-            $this->services = new ServicesConfig($servicesConfig);
+        if (!is_array($servicesConfig)) {
+            throw new AppConfigException('"services" block in main config file must be an object');
         }
+
+        $this->services = new ServicesConfig($servicesConfig);
     }
 
     /**
-     * @return string
+     * @param string $prop
+     * @return mixed
      */
-    public function env(): string
+    public function __get(string $prop)
     {
-        return $this->env;
+        switch ($prop) {
+            case "env":
+            case "timeZone":
+                return $this->$prop;
+        }
+
+        throw new \DomainException('Cannot get value of inaccessible property');
     }
 
     /**
-     * @return Site
+     * @return SiteConfig
      */
-    public function site(): Site
+    public function site(): SiteConfig
     {
         return $this->site;
+    }
+
+    /**
+     * @return ServicesConfig
+     */
+    public function services(): ServicesConfig
+    {
+        return $this->services;
     }
 
     /**

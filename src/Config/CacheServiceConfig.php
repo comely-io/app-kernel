@@ -23,17 +23,21 @@ use Comely\Utils\Validator\Validator;
 /**
  * Class CacheServiceConfig
  * @package Comely\App\Config
+ * @property-read string $engine
+ * @property-read string $host
+ * @property-read int $port
+ * @property-read null|int $timeOut
  */
 class CacheServiceConfig implements ObjectMapperInterface
 {
     /** @var string */
-    public $engine;
+    protected $engine;
     /** @var string */
-    public $host;
+    protected $host;
     /** @var int */
-    public $port;
+    protected $port;
     /** @var null|int */
-    public $timeOut;
+    protected $timeOut;
 
     /**
      * CacheServiceConfig constructor.
@@ -44,6 +48,23 @@ class CacheServiceConfig implements ObjectMapperInterface
     {
         $objectMapper = new ObjectMapper($this);
         $objectMapper->map($config);
+    }
+
+    /**
+     * @param string $prop
+     * @return mixed
+     */
+    public function __get(string $prop)
+    {
+        switch ($prop) {
+            case "engine":
+            case "host":
+            case "port":
+            case "timeOut":
+                return $this->$prop;
+        }
+
+        throw new \DomainException('Cannot get value of inaccessible property');
     }
 
     /**

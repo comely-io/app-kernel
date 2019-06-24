@@ -19,22 +19,26 @@ use Comely\Utils\OOP\ObjectMapper\ObjectMapperInterface;
 use Comely\Utils\Validator\Validator;
 
 /**
- * Class Site
+ * Class SiteConfig
  * @package Comely\App\Config
+ * @property-read string $title
+ * @property-read string $domain
+ * @property-read bool $https
+ * @property-read string $url
  */
-class Site implements ObjectMapperInterface
+class SiteConfig implements ObjectMapperInterface
 {
     /** @var string */
-    public $title;
+    protected $title;
     /** @var string */
-    public $domain;
+    protected $domain;
     /** @var bool */
-    public $https;
+    protected $https;
     /** @var string */
-    public $url;
+    protected $url;
 
     /**
-     * Site constructor.
+     * SiteConfig constructor.
      * @param array $site
      * @throws ObjectMapper\Exception\ObjectMapperException
      */
@@ -45,6 +49,23 @@ class Site implements ObjectMapperInterface
 
         $protocol = $this->https ? "https" : "http";
         $this->url = sprintf('%s://%s/', $protocol, $this->domain);
+    }
+
+    /**
+     * @param string $prop
+     * @return mixed
+     */
+    public function __get(string $prop)
+    {
+        switch ($prop) {
+            case "title":
+            case "domain":
+            case "https":
+            case "url":
+                return $this->$prop;
+        }
+
+        throw new \DomainException('Cannot get value of inaccessible property');
     }
 
     /**
