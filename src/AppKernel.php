@@ -16,7 +16,6 @@ namespace Comely\App;
 
 use Comely\App\Exception\AppBootstrapException;
 use Comely\App\Exception\AppConfigException;
-use Comely\App\Traits\NoDumpTrait;
 use Comely\App\Traits\NotCloneableTrait;
 use Comely\App\Traits\NotSerializableTrait;
 use Comely\Filesystem\Exception\PathException;
@@ -29,6 +28,8 @@ use Comely\Filesystem\Exception\PathPermissionException;
  */
 abstract class AppKernel implements \Serializable
 {
+    /** @var string App Name, Extending class should change these constant */
+    public const NAME = "Comely App Kernel";
     /** string Comely App Kernel Version (Major.Minor.Release-Suffix) */
     public const VERSION = "2019.173";
     /** int Comely App Kernel Version (Major . Minor . Release) */
@@ -66,7 +67,6 @@ abstract class AppKernel implements \Serializable
     /** @var Events */
     private $events;
 
-    use NoDumpTrait;
     use NotCloneableTrait;
     use NotSerializableTrait;
 
@@ -134,6 +134,14 @@ abstract class AppKernel implements \Serializable
 
         // Bootstrapped flag
         $this->bootstrapped = true;
+    }
+
+    /**
+     * @return array
+     */
+    public function __debugInfo(): array
+    {
+        return [static::NAME, static::VERSION];
     }
 
     /**
