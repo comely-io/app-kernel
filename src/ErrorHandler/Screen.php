@@ -101,13 +101,12 @@ class Screen
 
         // Comely Package
         $package = [
-            "App Kernel" => AppKernel::VERSION,
-            "Data Types" => DataTypes::VERSION,
-            "Utils" => Utils::VERSION,
-            "Filesystem" => Filesystem::VERSION,
-            "Database & ORM" => Database::VERSION,
-            "Http" => Http::VERSION,
-            "YAML" => Yaml::VERSION,
+            "Data Types" => ["data-types", DataTypes::VERSION],
+            "Utils" => ["utils", Utils::VERSION],
+            "Filesystem" => ["filesystem", Filesystem::VERSION],
+            "Database & ORM" => ["db-orm", Database::VERSION],
+            "Http" => ["http", Http::VERSION],
+            "YAML" => ["yaml", Yaml::VERSION],
         ];
 
         if (class_exists('Comely\Knit\Knit')) {
@@ -286,9 +285,18 @@ class Screen
                                 Package
                             </div>
                             <ul class="list-group">
-                                <?php foreach ($package as $lib => $version) { ?>
+                                <li class="list-group-item">
+                                    <a href="https://github.com/comelyio/app-kernel" target="_blank">
+                                        <i class="icon ion-social-github"></i>
+                                        Comely App Kernel
+                                    </a>
+                                    <strong class="text-muted float-right"><?php print AppKernel::VERSION; ?></strong>
+                                </li>
+                                <?php foreach ($package as $lib => $component) {
+                                    list($repo, $version) = $component;
+                                    ?>
                                     <li class="list-group-item">
-                                        <a href="https://github.com/comelyio/app-kernel" target="_blank">
+                                        <a href="https://github.com/comelyio/<?php print $repo; ?>" target="_blank">
                                             <i class="icon ion-social-github"></i>
                                             <?php print $lib; ?>
                                         </a>
