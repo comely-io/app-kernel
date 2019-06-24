@@ -57,6 +57,10 @@ class Services
                 throw new ServiceNotConfiguredException('Cache service is not configured');
             }
 
+            if (!$cacheConfig->engine) {
+                throw new ServiceNotConfiguredException('Cache service is disabled; No engine configured');
+            }
+
             $cache = new Cache();
             $cache->servers()->add($cacheConfig->engine, $cacheConfig->host, $cacheConfig->port);
             $cache->connect();
