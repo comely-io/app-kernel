@@ -71,7 +71,7 @@ abstract class AppKernel implements \Serializable
     use NotSerializableTrait;
 
     /**
-     * @return AppKernel
+     * @return static
      */
     public static function getInstance()
     {
@@ -84,7 +84,7 @@ abstract class AppKernel implements \Serializable
 
     /**
      * @param Bootstrapper $bs
-     * @return AppKernel
+     * @return static
      * @throws AppBootstrapException
      * @throws AppConfigException
      * @throws Exception\AppDirectoryException
