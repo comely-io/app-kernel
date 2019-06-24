@@ -16,6 +16,7 @@ namespace Comely\App;
 
 use Comely\App\Exception\AppBootstrapException;
 use Comely\App\Exception\AppConfigException;
+use Comely\App\Traits\NoDumpTrait;
 use Comely\App\Traits\NotCloneableTrait;
 use Comely\App\Traits\NotSerializableTrait;
 use Comely\Filesystem\Exception\PathException;
@@ -65,6 +66,7 @@ abstract class AppKernel implements \Serializable
     /** @var Events */
     private $events;
 
+    use NoDumpTrait;
     use NotCloneableTrait;
     use NotSerializableTrait;
 
