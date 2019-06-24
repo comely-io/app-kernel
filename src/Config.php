@@ -20,7 +20,6 @@ use Comely\App\Config\SiteConfig;
 use Comely\App\Exception\AppConfigException;
 use Comely\App\Traits\NoDumpTrait;
 use Comely\App\Traits\NotCloneableTrait;
-use Comely\App\Traits\NotSerializableTrait;
 use Comely\Utils\OOP\ObjectMapper\Exception\ObjectMapperException;
 use Comely\Yaml\Exception\YamlException;
 use Comely\Yaml\Yaml;
@@ -46,7 +45,6 @@ class Config
 
     use NoDumpTrait;
     use NotCloneableTrait;
-    use NotSerializableTrait;
 
     /**
      * Config constructor.
