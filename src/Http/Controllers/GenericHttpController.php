@@ -30,7 +30,7 @@ use Comely\Utils\OOP\OOP;
  * Class GenericHttpController
  * @package Comely\App\Http\Controllers
  */
-abstract class GenericHttpController extends AppController
+abstract class GenericHttpController extends AbstractAppController
 {
     /** @var ComelySession */
     private $session;

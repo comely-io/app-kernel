@@ -22,7 +22,7 @@ use Comely\Http\Router\AbstractController;
  * Class AppController
  * @package Comely\App\Http\Controllers
  */
-class AppController extends AbstractController
+abstract class AbstractAppController extends AbstractController
 {
     /** @var AppKernel */
     protected $app;
