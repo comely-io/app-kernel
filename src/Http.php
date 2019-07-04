@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Comely\App;
 
 use Comely\App\Http\Cookies;
+use Comely\App\Http\Remote;
 use Comely\Http\Exception\ServiceNotConfiguredException;
 
 /**
@@ -25,6 +26,8 @@ class Http
 {
     /** @var AppKernel */
     private $appKernel;
+    /** @var Remote */
+    private $remote;
     /** @var null|Cookies */
     private $cookies;
 
@@ -35,6 +38,36 @@ class Http
     public function __construct(AppKernel $appKernel)
     {
         $this->appKernel = $appKernel;
+        $this->remote = new Remote();
+    }
+
+    /**
+     * @return int|null
+     */
+    public function port(): ?int
+    {
+        $port = $_SERVER["SERVER_PORT"] ?? null;
+        if (!is_null($port)) {
+            $port = intval($port);
+        }
+
+        return $port;
+    }
+
+    /**
+     * @return bool
+     */
+    public function https(): bool
+    {
+        return isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] ? true : false;
+    }
+
+    /**
+     * @return Remote
+     */
+    public function remote(): Remote
+    {
+        return $this->remote;
     }
 
     /**
