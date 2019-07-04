@@ -21,6 +21,7 @@ use Comely\App\Exception\AppConfigException;
 use Comely\App\Traits\NoDumpTrait;
 use Comely\App\Traits\NotCloneableTrait;
 use Comely\Utils\OOP\ObjectMapper\Exception\ObjectMapperException;
+use Comely\Utils\OOP\OOP;
 use Comely\Yaml\Exception\YamlException;
 use Comely\Yaml\Yaml;
 
@@ -42,6 +43,8 @@ class Config
     private $dbs;
     /** @var ServicesConfig */
     private $services;
+    /** @var array */
+    private $customNodes;
 
     use NoDumpTrait;
     use NotCloneableTrait;
@@ -123,6 +126,39 @@ class Config
         }
 
         $this->services = new ServicesConfig($servicesConfig);
+
+        // Custom configuration nodes
+        unset($config["time_zone"], $config["timeZone"], $config["site"], $config["databases"], $config["services"]);
+        $this->customNodes = $this->populateCustomConfigNodes($config);
+    }
+
+    /**
+     * @param array $config
+     * @return array
+     */
+    private function populateCustomConfigNodes(array $config): array
+    {
+        $result = [];
+        foreach ($config as $key => $value) {
+            if (!is_string($key) || !preg_match('/^[\w\.\-]+$/', $key)) {
+                continue;
+            }
+
+            $key = OOP::camelCase(strval($key));
+            switch (gettype($value)) {
+                case "string":
+                case "integer":
+                case "boolean":
+                case "NULL":
+                    $result[$key] = $value;
+                    break;
+                case "array":
+                    $result[$key] = $this->populateCustomConfigNodes($value);
+                    break;
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -163,5 +199,14 @@ class Config
     public function db(string $tag): ?DbConfig
     {
         return $this->dbs[strtolower($tag)] ?? null;
+    }
+
+    /**
+     * @param string $key
+     * @return array|null
+     */
+    public function node(string $key): ?array
+    {
+        return $this->customNodes[$key] ?? null;
     }
 }
