@@ -17,8 +17,11 @@ namespace Comely\App;
 use Comely\Cache\Cache;
 use Comely\Http\Exception\ServiceNotConfiguredException;
 use Comely\Http\Router;
+use Comely\Knit\Knit;
 use Comely\Sessions\Sessions;
 use Comely\Sessions\Storage\SessionDirectory;
+use Comely\Translator\Exception\TranslatorException;
+use Comely\Translator\Translator;
 
 /**
  * Class Services
@@ -34,6 +37,12 @@ class Services
     private $router;
     /** @var Sessions */
     private $sessions;
+    /** @var Knit */
+    private $knit;
+    /** @var Translator */
+    private $translator;
+
+    private $mailer;
 
     /**
      * Services constructor.
@@ -73,10 +82,16 @@ class Services
     /**
      * @return Sessions
      * @throws Exception\AppDirectoryException
+     * @throws ServiceNotConfiguredException
      * @throws \Comely\Sessions\Exception\StorageException
      */
     public function sessions(): Sessions
     {
+        $sessionsConfig = $this->appKernel->config()->services()->sessions();
+        if (!$sessionsConfig) {
+            throw new ServiceNotConfiguredException('Sessions service is not configured');
+        }
+
         if (!$this->sessions) {
             $sessionsDirectory = new SessionDirectory($this->appKernel->dirs()->sessions());
             $sessions = new Sessions($sessionsDirectory);
@@ -99,9 +114,67 @@ class Services
         return $this->router;
     }
 
+    /**
+     * @return Knit
+     * @throws Exception\AppDirectoryException
+     */
+    public function knit(): Knit
+    {
+        if ($this->knit) {
+            return $this->knit;
+        }
+
+        $knit = new Knit();
+        $knit->dirs()->cache($this->appKernel->dirs()->cache())
+            ->compiler($this->appKernel->dirs()->compiler())
+            ->templates($this->appKernel->dirs()->templates());
+
+        $knit->modifiers()->registerDefaultModifiers();
+
+        $this->knit = $knit;
+        return $this->knit;
+    }
+
+    /**
+     * @return Translator
+     * @throws Exception\AppDirectoryException
+     * @throws ServiceNotConfiguredException
+     * @throws TranslatorException
+     */
     public function translator()
     {
-        // Todo: Translator component
+        if ($this->translator) {
+            return $this->translator;
+        }
+
+        try {
+            $translatorConfig = $this->appKernel->config()->services()->translator();
+            if (!$translatorConfig) {
+                throw new ServiceNotConfiguredException('Translator service is not configured');
+            }
+
+            $this->translator = Translator::createInstance($this->appKernel->dirs()->langs());
+            if ($translatorConfig->caching) {
+                $this->translator->cachingDirectory($this->appKernel->dirs()->cache());
+            }
+
+            // Fallback language
+            if ($translatorConfig->fallback) {
+                $this->translator->fallback($translatorConfig->fallback);
+            }
+
+            // Current language
+            if ($translatorConfig->cookie) {
+                $langCookie = $_COOKIE[$translatorConfig->cookie] ?? null;
+                if (is_string($langCookie) && $langCookie) {
+                    $this->translator->language($langCookie);
+                }
+            }
+        } catch (TranslatorException $e) {
+            throw $e;
+        }
+
+        return $this->translator;
     }
 
     public function mailer()
