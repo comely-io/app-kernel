@@ -52,6 +52,19 @@ class SiteConfig implements ObjectMapperInterface
     }
 
     /**
+     * @return array
+     */
+    public function array(): array
+    {
+        return [
+            "title" => $this->title,
+            "domain" => $this->domain,
+            "https" => $this->https,
+            "url" => $this->url
+        ];
+    }
+
+    /**
      * @param string $prop
      * @return mixed
      */
