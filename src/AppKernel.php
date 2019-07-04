@@ -21,6 +21,9 @@ use Comely\App\Traits\NotSerializableTrait;
 use Comely\Filesystem\Exception\PathException;
 use Comely\Filesystem\Exception\PathNotExistException;
 use Comely\Filesystem\Exception\PathPermissionException;
+use Comely\Http\Exception\ServiceNotConfiguredException;
+use Comely\Sessions\ComelySession;
+use Comely\Sessions\Exception\ComelySessionException;
 
 /**
  * Class AppKernel
@@ -66,6 +69,10 @@ abstract class AppKernel implements \Serializable
     private $timeZone;
     /** @var Events */
     private $events;
+    /** @var Http */
+    private $http;
+    /** @var bool */
+    private $services;
 
     use NotCloneableTrait;
     use NotSerializableTrait;
@@ -136,6 +143,9 @@ abstract class AppKernel implements \Serializable
 
         // Cipher Keys
         $this->cipherKeys = new CipherKeys($this);
+
+        // Services
+        $this->services = new Services($this);
 
         // Bootstrapped flag
         $this->bootstrapped = true;
@@ -223,6 +233,14 @@ abstract class AppKernel implements \Serializable
     }
 
     /**
+     * @return Services
+     */
+    final public function services(): Services
+    {
+        return $this->services;
+    }
+
+    /**
      * @param Bootstrapper $bootstrapper
      * @throws AppBootstrapException
      * @throws Exception\AppConfigException
@@ -301,5 +319,36 @@ abstract class AppKernel implements \Serializable
                 trigger_error('Failed to write cached configuration file', E_USER_WARNING);
             }
         }
+    }
+
+    /**
+     * @return Http
+     */
+    public function http(): Http
+    {
+        if (!$this->http) {
+            $this->http = new Http($this);
+        }
+
+        return $this->http;
+    }
+
+    /**
+     * @param string $id
+     * @return ComelySession
+     * @throws ComelySessionException
+     * @throws Exception\AppDirectoryException
+     * @throws ServiceNotConfiguredException
+     * @throws \Comely\Sessions\Exception\StorageException
+     */
+    public function session(string $id): ComelySession
+    {
+        try {
+            return $this->services->sessions()->resume($id);
+        } catch (ComelySessionException $e) {
+            trigger_error($e->getMessage(), E_USER_WARNING);
+        }
+
+        return $this->services->sessions()->start();
     }
 }
