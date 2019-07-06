@@ -73,6 +73,8 @@ abstract class AppKernel implements \Serializable
     private $http;
     /** @var bool */
     private $services;
+    /** @var Memory */
+    private $memory;
 
     use NotCloneableTrait;
     use NotSerializableTrait;
@@ -350,5 +352,25 @@ abstract class AppKernel implements \Serializable
         }
 
         return $this->services->sessions()->start();
+    }
+
+    /**
+     * @return Memory
+     */
+    public function memory(): Memory
+    {
+        if ($this->memory) {
+            return $this->memory;
+        }
+
+        $this->memory = new Memory();
+
+        try {
+            $cache = $this->services->cache();
+            $this->memory->caching($cache);
+        } catch (\Exception $e) {
+        }
+
+        return $this->memory;
     }
 }

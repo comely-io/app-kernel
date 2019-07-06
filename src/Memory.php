@@ -15,6 +15,8 @@ declare(strict_types=1);
 namespace Comely\App;
 
 use Comely\App\Memory\Query;
+use Comely\App\Traits\NotCloneableTrait;
+use Comely\App\Traits\NotSerializableTrait;
 use Comely\Cache\Cache;
 use Comely\Cache\Exception\CacheException;
 
@@ -28,6 +30,9 @@ class Memory
     private $instances;
     /** @var null|Cache */
     private $cache;
+
+    use NotSerializableTrait;
+    use NotCloneableTrait;
 
     /**
      * Memory constructor.

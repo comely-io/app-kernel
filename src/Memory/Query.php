@@ -56,22 +56,18 @@ class Query
     }
 
     /**
-     * @param $prop
-     * @return bool|\Closure|int|string|null
+     * @param string $prop
+     * @return mixed
      */
-    public function __get($prop)
+    public function __get(string $prop)
     {
         switch ($prop) {
             case "cache":
-                return $this->cache;
             case "cacheTTL":
-                return $this->cacheTTL;
             case "key":
-                return $this->key;
             case "instanceOf":
-                return $this->instanceOf;
             case "callback":
-                return $this->callback;
+                return $this->$prop;
         }
 
         throw new \DomainException('Cannot read inaccessible property');
