@@ -89,7 +89,7 @@ class CLI extends \Comely\CLI\CLI
 
         $this->events()->scriptLoaded()->listen(function (\Comely\CLI\CLI $cli, Abstract_CLI_Script $script) {
             $cli->inline(sprintf('CLI script {green}{invert} %s {/} loaded', OOP::baseClassName(get_class($script))));
-            $cli->repeat(".", 5, 100, true);
+            $cli->repeat(".", 3, 100, true);
             $cli->print("");
         });
 
