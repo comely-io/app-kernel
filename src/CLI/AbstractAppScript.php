@@ -24,6 +24,9 @@ use Comely\CLI\Abstract_CLI_Script;
  */
 abstract class AbstractAppScript extends Abstract_CLI_Script
 {
+    public const DISPLAY_HEADER = true;
+    public const DISPLAY_TRIGGERED_ERRORS = true;
+
     /** @var AppKernel */
     protected $app;
     /** @var CLI */
