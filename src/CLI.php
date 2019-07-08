@@ -77,11 +77,11 @@ class CLI extends \Comely\CLI\CLI
             $displayHeader = @constant($this->execClassName . "::DISPLAY_HEADER") ?? true;
             if ($displayHeader) {
                 $this->printAppHeader();
-            }
 
-            $cli->inline(sprintf('CLI script {green}{invert} %s {/} loaded', OOP::baseClassName(get_class($script))));
-            $cli->repeat(".", 3, 100, true);
-            $cli->print("");
+                $cli->inline(sprintf('CLI script {green}{invert} %s {/} loaded', OOP::baseClassName(get_class($script))));
+                $cli->repeat(".", 3, 100, true);
+                $cli->print("");
+            }
         });
 
         $this->events()->afterExec()->listen(function () {
