@@ -18,8 +18,10 @@ use Comely\App\Config\DbConfig;
 use Comely\App\Config\ServicesConfig;
 use Comely\App\Config\SiteConfig;
 use Comely\App\Exception\AppConfigException;
+use Comely\App\Exception\AppDirectoryException;
 use Comely\App\Traits\NoDumpTrait;
 use Comely\App\Traits\NotCloneableTrait;
+use Comely\Filesystem\Exception\PathNotExistException;
 use Comely\Utils\OOP\ObjectMapper\Exception\ObjectMapperException;
 use Comely\Utils\OOP\OOP;
 use Comely\Yaml\Exception\YamlException;
@@ -54,7 +56,7 @@ class Config
      * @param AppKernel $appKernel
      * @param string $env
      * @throws AppConfigException
-     * @throws Exception\AppDirectoryException
+     * @throws AppDirectoryException
      */
     public function __construct(AppKernel $appKernel, string $env)
     {
@@ -62,18 +64,27 @@ class Config
 
         try {
             $configFilePath = $appKernel->dirs()->config()
-                ->suffix(sprintf('env%s%s.yml', DIRECTORY_SEPARATOR, $env));
-            $config = Yaml::Parse($configFilePath)
+                ->file(sprintf('env%s%s.yml', DIRECTORY_SEPARATOR, $env));
+
+            $config = Yaml::Parse($configFilePath->path())
                 ->eol("\n")
                 ->evalNulls(true)
                 ->evalBooleans(true)
                 ->generate();
-        } catch (YamlException $e) {
+        } catch (\Exception $e) {
             if ($appKernel->dev()) {
                 ErrorHandler::Exception2Error($e);
             }
 
-            throw new AppConfigException('Failed to parse app YAML configuration files');
+            if ($e instanceof PathNotExistException) {
+                throw new AppConfigException(sprintf('Configuration file for env "%s" does not exist!', $env));
+            } elseif ($e instanceof AppDirectoryException) {
+                throw $e;
+            } elseif ($e instanceof YamlException) {
+                throw new AppConfigException('Failed to parse app YAML configuration files');
+            }
+
+            throw new AppConfigException(sprintf('Failed to load env "%s" configuration', $env));
         }
 
         // TimeZone
