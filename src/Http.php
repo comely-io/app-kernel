@@ -17,6 +17,7 @@ namespace Comely\App;
 use Comely\App\Http\Cookies;
 use Comely\App\Http\Remote;
 use Comely\Http\Exception\ServiceNotConfiguredException;
+use Comely\Http\Router;
 
 /**
  * Class Http
@@ -60,6 +61,15 @@ class Http
     public function https(): bool
     {
         return isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] ? true : false;
+    }
+
+    /**
+     * @return Router
+     * @throws \Comely\Http\Exception\RouterException
+     */
+    public function router(): Router
+    {
+        return $this->appKernel->services()->router();
     }
 
     /**
