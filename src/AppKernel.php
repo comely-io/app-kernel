@@ -22,6 +22,7 @@ use Comely\Filesystem\Exception\PathException;
 use Comely\Filesystem\Exception\PathNotExistException;
 use Comely\Filesystem\Exception\PathPermissionException;
 use Comely\Http\Exception\ServiceNotConfiguredException;
+use Comely\Mailer\Mailer;
 use Comely\Sessions\ComelySession;
 use Comely\Sessions\Exception\ComelySessionException;
 
@@ -352,6 +353,16 @@ abstract class AppKernel implements \Serializable
         }
 
         return $this->services->sessions()->start();
+    }
+
+    /**
+     * @return Mailer
+     * @throws ServiceNotConfiguredException
+     * @throws \Comely\Mailer\Exception\InvalidEmailAddrException
+     */
+    public function mailer(): Mailer
+    {
+        return $this->services->mailer();
     }
 
     /**

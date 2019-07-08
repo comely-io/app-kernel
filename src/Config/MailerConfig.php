@@ -20,11 +20,18 @@ use Comely\Utils\OOP\ObjectMapper\Exception\ObjectMapperException;
 /**
  * Class MailerConfig
  * @package Comely\App\Config
+ * @property-read string $agent
+ * @property-read string $senderName
+ * @property-read string $senderEmail
  */
 class MailerConfig
 {
     /** @var string */
     private $agent;
+    /** @var string */
+    private $senderName;
+    /** @var string */
+    private $senderEmail;
     /** @var MailerSMTPConfig */
     private $smtp;
 
@@ -44,6 +51,22 @@ class MailerConfig
         $this->agent = strtolower($agent);
         if (!in_array($this->agent, ["sendmail", "smtp"])) {
             throw new AppConfigException('No such mailer agent is supported');
+        }
+
+        // Sender
+        $sender = $mailer["sender"] ?? null;
+        if (!is_array($sender)) {
+            throw new AppConfigException('Mailer sender is not configured');
+        }
+
+        $this->senderName = trim($sender["name"]);
+        if (!$this->senderName) {
+            throw new AppConfigException('Mailer sender name is invalid');
+        }
+
+        $this->senderEmail = trim($sender["email"]);
+        if (!$this->senderEmail || !filter_var($this->senderEmail, FILTER_VALIDATE_EMAIL)) {
+            throw new AppConfigException('Invalid mailer sender e-mail address');
         }
 
         // SMTP

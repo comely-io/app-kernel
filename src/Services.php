@@ -18,6 +18,8 @@ use Comely\Cache\Cache;
 use Comely\Http\Exception\ServiceNotConfiguredException;
 use Comely\Http\Router;
 use Comely\Knit\Knit;
+use Comely\Mailer\Agents\SMTP;
+use Comely\Mailer\Mailer;
 use Comely\Sessions\Sessions;
 use Comely\Sessions\Storage\SessionDirectory;
 use Comely\Translator\Exception\TranslatorException;
@@ -41,7 +43,7 @@ class Services
     private $knit;
     /** @var Translator */
     private $translator;
-
+    /** @var Mailer */
     private $mailer;
 
     /**
@@ -177,8 +179,52 @@ class Services
         return $this->translator;
     }
 
+    /**
+     * @return Mailer
+     * @throws ServiceNotConfiguredException
+     * @throws \Comely\Mailer\Exception\InvalidEmailAddrException
+     */
     public function mailer()
     {
-        // Todo: Mailer component
+        if ($this->mailer) { // Already registered?
+            return $this->mailer;
+        }
+
+        $mailerConfig = $this->appKernel->config()->services()->mailer();
+        if (!$mailerConfig) {
+            throw new ServiceNotConfiguredException('Mailer service is not configured');
+        }
+
+        $mailer = new Mailer();
+        $mailer->sender()
+            ->name($mailerConfig->senderName)
+            ->email($mailerConfig->senderEmail);
+
+        // Agent
+        if ($mailerConfig->agent === "smtp") {
+            $smtpConfig = $mailerConfig->smtp();
+            if (!$smtpConfig) {
+                throw new ServiceNotConfiguredException('SMTP agent is not configured');
+            }
+
+            $username = $smtpConfig->username;
+            $password = $smtpConfig->password;
+            $serverName = $smtpConfig->serverName;
+
+            $smtp = (new SMTP($smtpConfig->host, $smtpConfig->port, $smtpConfig->timeOut))
+                ->useTLS($smtpConfig->tls);
+            if ($username && $password) { // Authentication credentials
+                $smtp->authCredentials($username, $password);
+            }
+
+            if ($serverName) { // Server Name
+                $smtp->serverName($serverName);
+            }
+
+            $mailer->agent($smtp); // Bind agent
+        }
+
+        $this->mailer = $mailer;
+        return $this->mailer;
     }
 }
