@@ -20,10 +20,10 @@
     "comely-io/db-orm": "dev-master",
     "comely-io/cache": "dev-master",
     "comely-io/http": "^1.0.20",
-    "comely-io/sessions": "dev-master#b81920d",
+    "comely-io/sessions": "dev-master",
     "comely-io/yaml": "^1.0.10",
-    "comely-io/translator": "dev-master#674736b",
-    "comely-io/cli": "dev-master#26e5855",
+    "comely-io/translator": "dev-master",
+    "comely-io/cli": "dev-master",
     "comely-io/mailer": "dev-master",
     "comely-io/knit": "dev-master"
   },
