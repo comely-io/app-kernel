@@ -99,13 +99,16 @@ class CLI extends \Comely\CLI\CLI
 
             $this->print("");
             if ($errorsCount) {
-                $this->print(sprintf("{red}{invert} %d {/}{red} triggered errors!{/}", $errorsCount));
                 $this->print("");
+                $this->repeat(".", 10, 50, true);
+                $this->print("");
+                $this->print(sprintf("{red}{invert} %d {/}{red}{b} triggered errors!{/}", $errorsCount));
                 foreach ($errors as $error) {
-                    $this->print(sprintf('├──┬ {invert}{red}{u} %s {/} {red}%s{/}', strtoupper($error["type"]), $error["message"]));
-                    $this->print(sprintf("│  ├ File: {cyan}%s{/}", $error["file"]));
-                    $this->print(sprintf("│  └ Line: {yellow}%d{/}", $error["line"] ?? -1));
-                    $this->print("│");
+                    $this->print(sprintf('{grey}│  ┌ {/}{yellow}Type:{/} {magenta}%s{/}', strtoupper($error["type"])));
+                    $this->print(sprintf('{grey}├──┼ {/}{yellow}Message:{/} %s', $error["message"]));
+                    $this->print(sprintf("{grey}│  ├ {/}{yellow}File:{/} {cyan}%s{/}", $error["file"]));
+                    $this->print(sprintf("{grey}│  └ {/}{yellow}Line:{/} %d", $error["line"] ?? -1));
+                    $this->print("{grey}│{/}");
                 }
 
                 $this->print("");
