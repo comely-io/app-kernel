@@ -73,12 +73,12 @@ class CLI extends \Comely\CLI\CLI
 
             // App Introduction
             $cli->print("");
-            $cli->repeat("~", 5, 100);
+            $cli->repeat("~", 5, 100, true);
             foreach (Banners::Digital($this->app->constant("name") ?? "Untitled App")->lines() as $line) {
                 $cli->print("{magenta}{invert}" . $line . "{/}");
             }
 
-            $cli->repeat("~", 5, 100);
+            $cli->repeat("~", 5, 100, true);
             $cli->print("");
         });
 
