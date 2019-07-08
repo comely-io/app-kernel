@@ -18,7 +18,7 @@ namespace Comely\App\Exception;
  * Class AppControllerException
  * @package Comely\App\Exception
  */
-class AppControllerException extends AppKernelException
+class AppControllerException extends AppException
 {
     /** @var null|string */
     protected $param;
