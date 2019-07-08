@@ -15,10 +15,15 @@ declare(strict_types=1);
 namespace Comely\App\ErrorHandler;
 
 use Comely\App\AppKernel;
+use Comely\Cache\Cache;
+use Comely\CLI\CLI;
 use Comely\Database\Database;
 use Comely\DataTypes\DataTypes;
 use Comely\Filesystem\Filesystem;
 use Comely\Http\Http;
+use Comely\Mailer\Mailer;
+use Comely\Sessions\Sessions;
+use Comely\Translator\Translator;
 use Comely\Utils\OOP\OOP;
 use Comely\Utils\Utils;
 use Comely\Yaml\Yaml;
@@ -101,16 +106,21 @@ class Screen
 
         // Comely Package
         $package = [
+            "Cache" => ["cache", Cache::VERSION],
+            "CLI" => ["cli", CLI::VERSION],
             "Data Types" => ["data-types", DataTypes::VERSION],
-            "Utils" => ["utils", Utils::VERSION],
-            "Filesystem" => ["filesystem", Filesystem::VERSION],
             "Database & ORM" => ["db-orm", Database::VERSION],
+            "Filesystem" => ["filesystem", Filesystem::VERSION],
             "Http" => ["http", Http::VERSION],
+            "Mailer" => ["mailer", Mailer::VERSION],
+            "Sessions" => ["sessions", Sessions::VERSION],
+            "Translator" => ["translator", Translator::VERSION],
+            "Utils" => ["utils", Utils::VERSION],
             "YAML" => ["yaml", Yaml::VERSION],
         ];
 
         if (class_exists('Comely\Knit\Knit')) {
-            $package["Knit"] = @constant('Comely\Knit\Knit::VERSION');
+            $package["Knit"] = constant('Comely\Knit\Knit::VERSION');
         }
 
         // Content-type header
@@ -192,7 +202,8 @@ class Screen
                 <div class="row">
                     <div class="col text-right">
                         <h5 class="font-weight-light">
-                            <a href="https://github.com/comely-io/app-kernel" target="_blank" class="info">Comely App Kernel
+                            <a href="https://github.com/comely-io/app-kernel" target="_blank" class="info">Comely App
+                                Kernel
                                 v<?php print $this->version; ?></a>
                         </h5>
                     </div>
