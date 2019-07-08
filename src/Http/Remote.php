@@ -65,20 +65,20 @@ class Remote
 
         if ($req) {
             // CF IP Address
-            if ($req->headers()->has("cf_connecting_ip")) {
-                $this->ipAddress = $req->headers()->get("cf_connecting_ip");
+            if ($req->headers()->has("cf-connecting-ip")) {
+                $this->ipAddress = $req->headers()->get("cf-connecting_-ip");
             }
 
             // XFF
-            if (!$this->ipAddress && $req->headers()->has("x_forwarded_for")) {
-                $xff = explode(",", $req->headers()->get("x_forwarded_for"));
+            if (!$this->ipAddress && $req->headers()->has("x-forwarded-for")) {
+                $xff = explode(",", $req->headers()->get("x-forwarded-for"));
                 $xff = preg_replace('/[^a-f0-9\.\:]/', '', strtolower($xff[0]));
                 $this->ipAddress = trim($xff);
             }
 
             // Other Headers
             $this->origin = $req->headers()->get("referer");
-            $this->agent = $req->headers()->get("user_agent");
+            $this->agent = $req->headers()->get("user-agent");
         }
 
         // IP Address
