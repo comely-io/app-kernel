@@ -78,10 +78,10 @@ class Config
 
             if ($e instanceof PathNotExistException) {
                 throw new AppConfigException(sprintf('Configuration file for env "%s" does not exist!', $env));
-            } elseif ($e instanceof AppDirectoryException) {
-                throw $e;
             } elseif ($e instanceof YamlException) {
                 throw new AppConfigException('Failed to parse app YAML configuration files');
+            } elseif ($e instanceof AppDirectoryException) {
+                throw $e;
             }
 
             throw new AppConfigException(sprintf('Failed to load env "%s" configuration', $env));
