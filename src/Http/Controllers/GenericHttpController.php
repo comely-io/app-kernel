@@ -51,7 +51,7 @@ abstract class GenericHttpController extends AbstractAppController
 
         $this->response()->header("content-type", "application/json");
 
-        $this->response()->set("status", true);
+        $this->response()->set("status", false);
         $this->response()->set("messages", null);
 
         // Controller method
