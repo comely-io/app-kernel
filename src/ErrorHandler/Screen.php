@@ -120,7 +120,7 @@ class Screen
         ];
 
         if (class_exists('Comely\Knit\Knit')) {
-            $package["Knit"] = constant('Comely\Knit\Knit::VERSION');
+            $package["Knit"] = ["knit", @constant('Comely\Knit\Knit::VERSION')];
         }
 
         // Content-type header
