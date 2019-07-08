@@ -99,7 +99,6 @@ class CLI extends \Comely\CLI\CLI
 
             $this->print("");
             if ($errorsCount) {
-                $this->print("");
                 $this->repeat(".", 10, 50, true);
                 $this->print("");
                 $this->print(sprintf("{red}{invert} %d {/}{red}{b} triggered errors!{/}", $errorsCount));
