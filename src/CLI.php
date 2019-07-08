@@ -58,7 +58,8 @@ class CLI extends \Comely\CLI\CLI
                 ->dev($this->flags()->has("dev"))
                 ->loadCachedConfig($this->flags()->has("noCache") ? false : true);
 
-            $this->app = new $appKernelClass($bootstrapper);
+            $appKernel = call_user_func(sprintf('%s::Bootstrap', $appKernelClass), $bootstrapper);
+            $this->app = $appKernel;
         } catch (\Throwable $t) {
             $this->exception2Str($t);
             $this->finish();
