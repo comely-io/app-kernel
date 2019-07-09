@@ -26,6 +26,7 @@ use Comely\Knit\Template;
 use Comely\Sessions\ComelySession;
 use Comely\Sessions\Exception\SessionsException;
 use Comely\Utils\OOP\OOP;
+use Comely\Utils\Security\Exception\PRNG_Exception;
 
 /**
  * Class GenericHttpController
@@ -41,7 +42,7 @@ abstract class GenericHttpController extends AbstractAppController
     private $xsrf;
     /** @var Messages */
     private $flashMessages;
-    /** @var Page */
+    /** @var null|Page */
     private $page;
 
     /**
@@ -50,7 +51,6 @@ abstract class GenericHttpController extends AbstractAppController
     public function callback(): void
     {
         parent::callback();
-        $this->page = new Page($this);
         $this->messages = new Messages();
 
         $this->response()->header("content-type", "application/json");
@@ -243,9 +243,18 @@ abstract class GenericHttpController extends AbstractAppController
 
     /**
      * @return Page
+     * @throws XSRF_Exception
      */
     public function page(): Page
     {
+        if (!$this->page) {
+            try {
+                $this->page = new Page($this);
+            } catch (PRNG_Exception $e) {
+                throw new \RuntimeException(sprintf('[%s][%s] %s', get_class($e), $e->getCode(), $e->getMessage()));
+            }
+        }
+
         return $this->page;
     }
 
@@ -283,6 +292,10 @@ abstract class GenericHttpController extends AbstractAppController
             $template->assign("errors", $this->app->errorHandler()->errors());
             $template->assign("config", $config);
             $template->assign("remote", $this->remote());
+
+            if ($this->page) {
+                $template->assign("page", $this->page);
+            }
 
             // Default response type (despite of ACCEPT header)
             $this->response()->header("content-type", "text/html");
