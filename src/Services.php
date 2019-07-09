@@ -143,7 +143,7 @@ class Services
      * @throws ServiceNotConfiguredException
      * @throws TranslatorException
      */
-    public function translator()
+    public function translator(): Translator
     {
         if ($this->translator) {
             return $this->translator;
@@ -184,7 +184,7 @@ class Services
      * @throws ServiceNotConfiguredException
      * @throws \Comely\Mailer\Exception\InvalidEmailAddrException
      */
-    public function mailer()
+    public function mailer(): Mailer
     {
         if ($this->mailer) { // Already registered?
             return $this->mailer;
