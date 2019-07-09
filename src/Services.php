@@ -162,7 +162,8 @@ class Services
 
             // Fallback language
             if ($translatorConfig->fallback) {
-                $this->translator->fallback($translatorConfig->fallback);
+                $this->translator->fallback($translatorConfig->fallback)
+                    ->language($translatorConfig->fallback);
             }
 
             // Current language
