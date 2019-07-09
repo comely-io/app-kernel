@@ -12,13 +12,11 @@
 
 declare(strict_types=1);
 
-namespace Comely\Http\Exception;
-
-use Comely\App\Exception\AppConfigException;
+namespace Comely\App\Exception;
 
 /**
  * Class ServiceNotConfiguredException
- * @package Comely\Http\Exception
+ * @package Comely\App\Exception
  */
 class ServiceNotConfiguredException extends AppConfigException
 {

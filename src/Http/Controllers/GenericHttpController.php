@@ -15,11 +15,11 @@ declare(strict_types=1);
 namespace Comely\App\Http\Controllers;
 
 use Comely\App\Exception\AppControllerException;
+use Comely\App\Exception\ServiceNotConfiguredException;
 use Comely\App\Exception\XSRF_Exception;
 use Comely\App\Http\Page;
 use Comely\App\Http\Response\Messages;
 use Comely\App\Http\Security\XSRF;
-use Comely\Http\Exception\ServiceNotConfiguredException;
 use Comely\Knit\Exception\KnitException;
 use Comely\Knit\Knit;
 use Comely\Knit\Template;

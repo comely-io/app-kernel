@@ -14,8 +14,8 @@ declare(strict_types=1);
 
 namespace Comely\App;
 
+use Comely\App\Exception\ServiceNotConfiguredException;
 use Comely\Cache\Cache;
-use Comely\Http\Exception\ServiceNotConfiguredException;
 use Comely\Http\Router;
 use Comely\Knit\Knit;
 use Comely\Mailer\Agents\SMTP;

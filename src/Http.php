@@ -14,9 +14,9 @@ declare(strict_types=1);
 
 namespace Comely\App;
 
+use Comely\App\Exception\ServiceNotConfiguredException;
 use Comely\App\Http\Cookies;
 use Comely\App\Http\Remote;
-use Comely\Http\Exception\ServiceNotConfiguredException;
 use Comely\Http\Router;
 
 /**
