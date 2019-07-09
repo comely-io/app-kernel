@@ -16,6 +16,7 @@ namespace Comely\App\Http\Controllers;
 
 use Comely\App\Exception\AppControllerException;
 use Comely\App\Exception\XSRF_Exception;
+use Comely\App\Http\Page;
 use Comely\App\Http\Response\Messages;
 use Comely\App\Http\Security\XSRF;
 use Comely\Http\Exception\ServiceNotConfiguredException;
@@ -40,6 +41,8 @@ abstract class GenericHttpController extends AbstractAppController
     private $xsrf;
     /** @var Messages */
     private $flashMessages;
+    /** @var Page */
+    private $page;
 
     /**
      * @throws \Exception
@@ -47,6 +50,7 @@ abstract class GenericHttpController extends AbstractAppController
     public function callback(): void
     {
         parent::callback();
+        $this->page = new Page($this);
         $this->messages = new Messages();
 
         $this->response()->header("content-type", "application/json");
@@ -235,6 +239,14 @@ abstract class GenericHttpController extends AbstractAppController
     public function template(string $templateFile): Template
     {
         return $this->knit()->template($templateFile);
+    }
+
+    /**
+     * @return Page
+     */
+    public function page(): Page
+    {
+        return $this->page;
     }
 
     /**

@@ -48,7 +48,8 @@ class XSRF
      */
     public function token(): ?string
     {
-        return $this->session->meta()->get("csrf_token");
+        $xsrfBag = $this->session->meta()->bag("xsrf");
+        return $xsrfBag->get("entropy");
     }
 
     /**
