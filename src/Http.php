@@ -103,7 +103,7 @@ class Http
         $cookies = new Cookies();
         $cookies->expire($cookiesConfig->expire)
             ->path($cookiesConfig->path)
-            ->domain($cookiesConfig->domain)
+            ->domain($cookiesConfig->domain ?? sprintf(".%s", $this->appKernel->config()->site()->domain))
             ->secure($cookiesConfig->secure)
             ->httpOnly($cookiesConfig->httpOnly);
 
