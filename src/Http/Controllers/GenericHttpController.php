@@ -294,7 +294,7 @@ abstract class GenericHttpController extends AbstractAppController
             $template->assign("remote", $this->remote());
 
             if ($this->page) {
-                $template->assign("page", $this->page);
+                $template->assign("page", $this->page->array());
             }
 
             // Default response type (despite of ACCEPT header)
