@@ -22,6 +22,8 @@ use Comely\App\Http\Controllers\GenericHttpController;
  */
 class Page
 {
+    /** @var GenericHttpController */
+    private $controller;
     /** @var array */
     private $props;
     /** @var array */
@@ -30,19 +32,32 @@ class Page
     /**
      * Page constructor.
      * @param GenericHttpController $controller
-     * @throws \Comely\App\Exception\XSRF_Exception
-     * @throws \Comely\Utils\Security\Exception\PRNG_Exception
      */
     public function __construct(GenericHttpController $controller)
     {
+        $this->controller = $controller;
         $this->assets = [];
         $this->props = [
             "title" => null,
             "language" => null,
             "index" => $this->index(0),
             "root" => $controller->request()->url()->root(),
-            "token" => $controller->xsrf()->token() ?? $controller->xsrf()->generate()
+            "token" => null
         ];
+    }
+
+    /**
+     * @param int|null $ttl
+     * @param bool $ipSensitive
+     * @return Page
+     * @throws \Comely\App\Exception\XSRF_Exception
+     * @throws \Comely\Utils\Security\Exception\PRNG_Exception
+     */
+    public function set_XSRF_Token(?int $ttl = null, bool $ipSensitive = true): self
+    {
+        $xsrf = $this->controller->xsrf();
+        $this->props["token"] = $xsrf->token() ?? $xsrf->generate($ttl, $ipSensitive);
+        return $this;
     }
 
     /**
