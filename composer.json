@@ -17,15 +17,15 @@
     "comely-io/data-types": "^1.0.23",
     "comely-io/utils": "^1.1.13",
     "comely-io/filesystem": "^1.0.11",
-    "comely-io/db-orm": "dev-master",
-    "comely-io/cache": "dev-master",
+    "comely-io/db-orm": "^1.0.11",
+    "comely-io/cache": "^1.0.10",
     "comely-io/http": "^1.0.32",
-    "comely-io/sessions": "dev-master",
+    "comely-io/sessions": "^1.0.10",
     "comely-io/yaml": "^1.0.10",
-    "comely-io/translator": "dev-master",
-    "comely-io/cli": "dev-master",
-    "comely-io/mailer": "dev-master",
-    "comely-io/knit": "dev-master"
+    "comely-io/translator": "^1.0.10",
+    "comely-io/cli": "^1.0.10",
+    "comely-io/mailer": "^1.0.10",
+    "comely-io/knit": "^2.2.1"
   },
   "autoload": {
     "psr-4": {
