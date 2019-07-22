@@ -285,7 +285,7 @@ abstract class GenericHttpController extends AbstractAppController
                 "site" => $this->app->config()->site()->array()
             ];
 
-            $template->assign("flashMessages", $flashMessages);
+            $template->assign("flashMessages", $flashMessages ?? []);
             $template->assign("errors", $this->app->errorHandler()->errors());
             $template->assign("config", $config);
             $template->assign("remote", $this->remote());
