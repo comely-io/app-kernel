@@ -93,7 +93,7 @@ class HttpCookiesConfig implements ObjectMapperInterface
         });
 
         $objectMapper->prop("domain")->nullable()->dataTypes("string")->validate(function ($domain) {
-            return Validator::String($domain)->lowerCase()->match('/^[a-z0-9\-]+(\.[a-z0-9\-]+)*$/')->validate();
+            return Validator::String($domain)->lowerCase()->match('/^\.?[a-z0-9\-]+(\.[a-z0-9\-]+)*$/')->validate();
         });
 
         $objectMapper->prop("secure")->dataTypes("boolean");
