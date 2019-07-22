@@ -36,7 +36,7 @@ abstract class AppKernel implements \Serializable
     /** string Comely App Kernel Version (Major.Minor.Release-Suffix) */
     public const VERSION = "2019.203a";
     /** int Comely App Kernel Version (Major . Minor . Release) */
-    public const VERSION_ID = 201919200;
+    public const VERSION_ID = 201920300;
 
     protected const DIR_CONFIG = null;
     protected const DIR_STORAGE = null;
