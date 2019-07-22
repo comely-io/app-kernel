@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Comely\App\Http\Controllers;
 
 use Comely\App\Exception\AppControllerException;
+use Comely\App\Exception\AppDirectoryException;
 use Comely\App\Exception\ServiceNotConfiguredException;
 use Comely\App\Exception\XSRF_Exception;
 use Comely\App\Http\Page;
@@ -26,7 +27,6 @@ use Comely\Knit\Template;
 use Comely\Sessions\ComelySession;
 use Comely\Sessions\Exception\SessionsException;
 use Comely\Utils\OOP\OOP;
-use Comely\Utils\Security\Exception\PRNG_Exception;
 
 /**
  * Class GenericHttpController
@@ -223,18 +223,20 @@ abstract class GenericHttpController extends AbstractAppController
 
     /**
      * @return Knit
-     * @throws \Comely\App\Exception\AppDirectoryException
      */
     public function knit(): Knit
     {
-        return $this->app->services()->knit();
+        try {
+            return $this->app->services()->knit();
+        } catch (AppDirectoryException $e) {
+            throw new \RuntimeException(sprintf('[AppDirectoryException] %s', $e->getMessage()));
+        }
     }
 
     /**
      * @param string $templateFile
      * @return Template
-     * @throws \Comely\App\Exception\AppDirectoryException
-     * @throws \Comely\Knit\Exception\KnitException
+     * @throws \Comely\Knit\Exception\TemplateException
      */
     public function template(string $templateFile): Template
     {
@@ -243,16 +245,11 @@ abstract class GenericHttpController extends AbstractAppController
 
     /**
      * @return Page
-     * @throws XSRF_Exception
      */
     public function page(): Page
     {
         if (!$this->page) {
-            try {
-                $this->page = new Page($this);
-            } catch (PRNG_Exception $e) {
-                throw new \RuntimeException(sprintf('[%s][%s] %s', get_class($e), $e->getCode(), $e->getMessage()));
-            }
+            $this->page = new Page($this);
         }
 
         return $this->page;
