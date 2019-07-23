@@ -34,9 +34,9 @@ abstract class AppKernel implements \Serializable
     /** @var string App Name, Extending class should change these constant */
     public const NAME = "Comely App Kernel";
     /** string Comely App Kernel Version (Major.Minor.Release-Suffix) */
-    public const VERSION = "2019.203b";
+    public const VERSION = "2019.204a";
     /** int Comely App Kernel Version (Major . Minor . Release) */
-    public const VERSION_ID = 201920300;
+    public const VERSION_ID = 201920400;
 
     protected const DIR_CONFIG = null;
     protected const DIR_STORAGE = null;
