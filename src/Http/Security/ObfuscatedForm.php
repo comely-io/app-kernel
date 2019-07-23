@@ -86,7 +86,7 @@ class ObfuscatedForm implements \Serializable
                 );
             }
 
-            $key = $entropy[$pos];
+            $key = $obfuscated[$pos];
             if (preg_match('/^[0-9]+$/', $key)) {
                 $key{0} = chr(97 + intval($key{0})); // Force numerical keys into alphanumeric
             }
