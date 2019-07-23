@@ -16,10 +16,13 @@ namespace Comely\App\Http\Controllers;
 
 use Comely\App\Exception\AppControllerException;
 use Comely\App\Exception\AppDirectoryException;
+use Comely\App\Exception\ObfuscatedFormsException;
 use Comely\App\Exception\ServiceNotConfiguredException;
 use Comely\App\Exception\XSRF_Exception;
 use Comely\App\Http\Page;
 use Comely\App\Http\Response\Messages;
+use Comely\App\Http\Security\Forms;
+use Comely\App\Http\Security\ObfuscatedForm;
 use Comely\App\Http\Security\XSRF;
 use Comely\Knit\Exception\KnitException;
 use Comely\Knit\Knit;
@@ -44,6 +47,8 @@ abstract class GenericHttpController extends AbstractAppController
     private $flashMessages;
     /** @var null|Page */
     private $page;
+    /** @var null|Forms */
+    private $obfuscatedForms;
 
     /**
      * @throws \Exception
@@ -219,6 +224,49 @@ abstract class GenericHttpController extends AbstractAppController
         }
 
         return $this->xsrf;
+    }
+
+    /**
+     * @return Forms
+     * @throws ObfuscatedFormsException
+     */
+    public function obfuscatedForms(): Forms
+    {
+        if (!$this->obfuscatedForms) {
+            if (!$this->session) {
+                throw new ObfuscatedFormsException('Obfuscated forms requires session instantiated');
+            }
+
+            $this->obfuscatedForms = new Forms($this->app, $this->session);
+        }
+
+        return $this->obfuscatedForms;
+    }
+
+    /**
+     * @param string $name
+     * @param string|null $hashFieldName
+     * @return ObfuscatedForm
+     * @throws ObfuscatedFormsException
+     */
+    public function getObfuscatedForm(string $name, ?string $hashFieldName = "hash"): ObfuscatedForm
+    {
+        $form = $this->obfuscatedForms()->retrieve($name);
+        if (!$form) {
+            throw new ObfuscatedFormsException('Secure obfuscated form not found; Try refreshing the page');
+        }
+
+        // Set input payload
+        $form->input($this->input());
+
+        // Verify form hash
+        if ($hashFieldName) {
+            if (!hash_equals($form->hash(), $form->value($hashFieldName) ?? "")) {
+                throw new ObfuscatedFormsException('Invalid obfuscated form hash');
+            }
+        }
+
+        return $form;
     }
 
     /**
