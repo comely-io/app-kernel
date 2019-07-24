@@ -27,7 +27,7 @@ class AppControllerException extends AppException
      * @param string $param
      * @return AppControllerException
      */
-    public function setParam(string $param): self
+    public function setParam(?string $param): self
     {
         $this->param = $param;
         return $this;
