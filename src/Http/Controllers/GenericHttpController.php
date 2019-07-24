@@ -112,11 +112,31 @@ abstract class GenericHttpController extends AbstractAppController
         }
 
         // Set flash messages in session
+        $this->storeFlashMessages();
+
+        $this->onFinish(); // Event callback: onFinish
+    }
+
+    /**
+     * @return void
+     */
+    private function storeFlashMessages(): void
+    {
         if ($this->flashMessages && $this->session) {
             $this->session->flash()->bags()->set("messages", serialize($this->flashMessages));
         }
+    }
 
-        $this->onFinish(); // Event callback: onFinish
+    /**
+     * @param string $url
+     * @param int|null $code
+     */
+    public function redirect(string $url, ?int $code = null): void
+    {
+        // Set flash messages in session
+        $this->storeFlashMessages();
+
+        parent::redirect($url, $code);
     }
 
     /**
