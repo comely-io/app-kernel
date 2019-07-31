@@ -18,6 +18,7 @@ use Comely\App\Exception\AppBootstrapException;
 use Comely\App\Exception\AppConfigException;
 use Comely\App\Traits\NotCloneableTrait;
 use Comely\App\Traits\NotSerializableTrait;
+use Comely\Cache\Cache;
 use Comely\Filesystem\Exception\PathException;
 use Comely\Filesystem\Exception\PathNotExistException;
 use Comely\Filesystem\Exception\PathPermissionException;
@@ -352,6 +353,16 @@ abstract class AppKernel implements \Serializable
         }
 
         return $this->services->sessions()->start();
+    }
+
+    /**
+     * @return Cache
+     * @throws Exception\ServiceNotConfiguredException
+     * @throws \Comely\Cache\Exception\ConnectionException
+     */
+    public function cache(): Cache
+    {
+        return $this->services->cache();
     }
 
     /**
