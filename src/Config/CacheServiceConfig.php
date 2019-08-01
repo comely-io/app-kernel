@@ -68,6 +68,19 @@ class CacheServiceConfig implements ObjectMapperInterface
     }
 
     /**
+     * @return array
+     */
+    public function array(): array
+    {
+        return [
+            "engine" => $this->engine,
+            "host" => $this->host,
+            "port" => $this->port,
+            "timeOut" => $this->timeOut
+        ];
+    }
+
+    /**
      * @param ObjectMapper $objectMapper
      */
     public function objectMapperProps(ObjectMapper $objectMapper): void
