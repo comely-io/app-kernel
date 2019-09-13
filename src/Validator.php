@@ -38,4 +38,23 @@ class Validator
         $filterIP = filter_var($hostname, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6);
         return $filterIP ? $filterIP : null;
     }
+
+    /**
+     * @param $ip
+     * @param bool $allowV6
+     * @return bool
+     */
+    public static function isValidIP($ip, bool $allowV6 = true): bool
+    {
+        if (!is_string($ip) || !$ip) {
+            return false;
+        }
+
+        $flags = FILTER_FLAG_IPV4;
+        if ($allowV6) {
+            $flags = FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6;
+        }
+
+        return filter_var($ip, FILTER_VALIDATE_IP, $flags);
+    }
 }
