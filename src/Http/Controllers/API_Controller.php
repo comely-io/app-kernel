@@ -34,7 +34,6 @@ abstract class API_Controller extends AbstractAppController
 
         // Prepare response
         $this->response()->set("status", false);
-        $this->response()->set("message", null);
 
         // Controller method
         $controllerMethod = strtolower($this->request()->method());
@@ -50,7 +49,8 @@ abstract class API_Controller extends AbstractAppController
             $this->onLoad(); // Event callback: onLoad
             call_user_func([$this, $controllerMethod]);
         } catch (\Exception $e) {
-            $this->response()->set("message", $e->getMessage());
+            $this->response()->set("status", false);
+            $this->response()->set("error", $e->getMessage());
 
             if ($e instanceof AppControllerException) {
                 $param = $e->getParam();
@@ -72,6 +72,12 @@ abstract class API_Controller extends AbstractAppController
         }
 
         $this->onFinish(); // Event callback: onFinish
+    }
+
+    final public function status(bool $status): self
+    {
+        $this->response()->set("status", $status);
+        return $this;
     }
 
     /**
