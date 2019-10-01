@@ -123,6 +123,11 @@ class Screen
             $package["Knit"] = ["knit", @constant('Comely\Knit\Knit::VERSION')];
         }
 
+        // HTTP response code on FATAL errors
+        if ($ex instanceof \Error) {
+            http_response_code(500); // Indicate Server Error
+        }
+
         // Content-type header
         header('Content-type: text/html');
 
