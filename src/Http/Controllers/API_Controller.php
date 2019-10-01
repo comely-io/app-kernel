@@ -44,6 +44,7 @@ abstract class API_Controller extends AbstractAppController
                 if ($controllerMethod === "options") {
                     $this->response()->set("status", true);
                     $this->response()->set("options", []);
+                    return;
                 } else {
                     throw new AppControllerException(
                         sprintf('Endpoint "%s" does not support "%s" method', get_called_class(), strtoupper($controllerMethod))
