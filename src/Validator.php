@@ -21,6 +21,19 @@ namespace Comely\App;
 class Validator
 {
     /**
+     * @param $domain
+     * @return bool
+     */
+    public static function isValidWebDomain($domain): bool
+    {
+        if (is_string($domain) && preg_match('/^([a-z0-9\-]+\.)?[a-z0-9\-]+(\.[a-z]{2,8})?\.[a-z]{2,8}$/i', $domain)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * @param $hostname
      * @return string|null
      */
@@ -56,5 +69,48 @@ class Validator
         }
 
         return filter_var($ip, FILTER_VALIDATE_IP, $flags);
+    }
+
+    /**
+     * @param $timeStamp
+     * @return bool
+     */
+    public static function isValidTimeStamp($timeStamp): bool
+    {
+        if (is_int($timeStamp) && $timeStamp > 0x3B9ACA00) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param $value
+     * @param string|null $allow
+     * @return bool
+     */
+    public static function isASCII($value, ?string $allow = null): bool
+    {
+        if (!is_string($value)) {
+            return false;
+        }
+
+        $allowed = $allow ? preg_quote($allow, "/") : "";
+        $match = '/^[\w\s' . $allowed . ']*$/';
+
+        return preg_match($match, $value) ? true : false;
+    }
+
+    /**
+     * @param $value
+     * @return bool
+     */
+    public static function isUTF8($value): bool
+    {
+        if (!is_string($value)) {
+            return false;
+        }
+
+        return strlen($value) !== mb_strlen($value) ? true : false;
     }
 }
