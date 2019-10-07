@@ -133,7 +133,7 @@ class Memory
         // Store in cache?
         if ($this->cache && $cache) {
             try {
-                $this->cache->set($key, clone $object, $ttl);
+                $this->cache->set($key, $object, $ttl);
             } catch (CacheException $e) {
                 trigger_error($e->getMessage(), E_USER_WARNING);
             }
