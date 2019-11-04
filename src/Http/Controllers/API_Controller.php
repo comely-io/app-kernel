@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Comely\App\Http\Controllers;
 
 use Comely\App\Exception\AppControllerException;
+use Comely\Utils\OOP\OOP;
 
 /**
  * Class API_Controller
@@ -22,6 +23,8 @@ use Comely\App\Exception\AppControllerException;
  */
 abstract class API_Controller extends AbstractAppController
 {
+    protected const EXPLICIT_METHOD_NAMES = false;
+
     /**
      * @return void
      */
@@ -36,12 +39,21 @@ abstract class API_Controller extends AbstractAppController
         $this->response()->set("status", false);
 
         // Controller method
-        $controllerMethod = strtolower($this->request()->method());
+        $httpRequestMethod = strtolower($this->request()->method());
+        $controllerMethod = $httpRequestMethod;
+
+        // Explicit method name
+        if(static::EXPLICIT_METHOD_NAMES) {
+            $queryStringMethod = explode("&", $this->request()->url()->query() ?? "")[0];
+            if (preg_match('/^\w+$/', $queryStringMethod)) {
+                $controllerMethod .= OOP::PascalCase($queryStringMethod);
+            }
+        }
 
         // Execute
         try {
             if (!method_exists($this, $controllerMethod)) {
-                if ($controllerMethod === "options") {
+                if ($httpRequestMethod === "options") {
                     $this->response()->set("status", true);
                     $this->response()->set("options", []);
                     return;
