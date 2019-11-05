@@ -19,6 +19,7 @@ use Comely\App\Exception\AppConfigException;
 use Comely\App\Traits\NotCloneableTrait;
 use Comely\App\Traits\NotSerializableTrait;
 use Comely\Database\Database;
+use Comely\Database\Queries\Query;
 use Comely\Database\Server\DbCredentials;
 
 /**
@@ -79,5 +80,29 @@ class Databases
         $this->dbs[$tag] = $db;
 
         return $db;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllQueries(): array
+    {
+        $queries = [];
+
+        /**
+         * @var string $dbName
+         * @var Database $dbInstance
+         */
+        foreach ($this->dbs as $dbName => $dbInstance) {
+            /** @var Query $query */
+            foreach ($dbInstance->queries() as $query) {
+                $queries[] = [
+                    "db" => $dbName,
+                    "query" => $query
+                ];
+            }
+        }
+
+        return $queries;
     }
 }
