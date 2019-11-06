@@ -214,10 +214,7 @@ class Directories
                 sprintf('Directory defined for %s does not exist in project root', strtoupper($prop))
             );
         } catch (PathException $e) {
-            if ($this->appKernel->dev()) {
-                ErrorHandler::Exception2Error($e);
-            }
-
+            $this->appKernel->errorHandler()->triggerIfDebug($e, E_USER_WARNING);
             throw new AppDirectoryException(sprintf('Failed to load directory for %s', strtoupper($prop)));
         }
     }

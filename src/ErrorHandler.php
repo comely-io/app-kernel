@@ -44,7 +44,16 @@ class ErrorHandler
      */
     public static function Exception2Error(\Exception $e, int $type = E_USER_WARNING): void
     {
-        trigger_error(sprintf('[%s][#%s] %s', get_class($e), $e->getCode(), $e->getMessage()), $type);
+        trigger_error(self::Exception2String($e), $type);
+    }
+
+    /**
+     * @param \Exception $e
+     * @return string
+     */
+    public static function Exception2String(\Exception $e): string
+    {
+        return sprintf('[%s][#%s] %s', get_class($e), $e->getCode(), $e->getMessage());
     }
 
     /**
@@ -78,26 +87,59 @@ class ErrorHandler
     }
 
     /**
-     * @param string $message
+     * @param $message
      * @param int $type
+     * @param int $debugTraceLevel
      */
-    public function triggerIfDebug(string $message, int $type = E_USER_NOTICE): void
+    public function trigger($message, int $type = E_USER_NOTICE, int $debugTraceLevel = 1): void
     {
+        $errorMsg = $this->prepareErrorMsg($message, $type, $debugTraceLevel);
+        $errorMsg->triggered = true;
+        $this->errors->append($errorMsg);
+    }
+
+    /**
+     * @param $message
+     * @param int $type
+     * @param int $debugTraceLevel
+     */
+    public function triggerIfDebug($message, int $type = E_USER_NOTICE, int $debugTraceLevel = 1): void
+    {
+        $errorMsg = $this->prepareErrorMsg($message, $type, $debugTraceLevel);
+        $errorMsg->triggered = $this->appKernel->dev() ? true : false;
+        $this->errors->append($errorMsg);
+    }
+
+    /**
+     * @param $message
+     * @param int $type
+     * @param int $debugTraceLevel
+     * @return ErrorMsg
+     */
+    private function prepareErrorMsg($message, int $type = E_USER_NOTICE, int $debugTraceLevel = 1): ErrorMsg
+    {
+        if (is_object($message) && $message instanceof \Exception) {
+            $message = self::Exception2String($message);
+        }
+
+        if (!is_string($message)) {
+            throw new \InvalidArgumentException('ErrorHandler expects first argument as string or instance of an Exception');
+        }
+
         if (!in_array($type, [E_USER_NOTICE, E_USER_WARNING])) {
             throw new \InvalidArgumentException('Invalid triggered error type');
         }
 
-        $debugBacktrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1);
-        $file = strval($debugBacktrace[0]["file"] ?? "");
-        $line = intval($debugBacktrace[0]["line"] ?? -1);
+        $debugBacktrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+        $file = strval($debugBacktrace[$debugTraceLevel]["file"] ?? "");
+        $line = intval($debugBacktrace[$debugTraceLevel]["line"] ?? -1);
 
         $error = new ErrorMsg();
         $error->type = $this->type($type);
         $error->message = $message;
         $error->file = $this->filePath($file);
         $error->line = $line;
-        $error->triggered = $this->appKernel->dev() ? true : false;
-        $this->errors->append($error);
+        return $error;
     }
 
     /**

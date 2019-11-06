@@ -294,10 +294,7 @@ abstract class AppKernel implements \Serializable
                     E_USER_WARNING
                 );
             } catch (PathException $e) {
-                if ($this->dev) {
-                    ErrorHandler::Exception2Error($e);
-                }
-
+                $this->errorHandler->triggerIfDebug($e, E_USER_WARNING);
                 trigger_error('An error occurred while reading cached configuration', E_USER_WARNING);
             }
         }
@@ -315,10 +312,7 @@ abstract class AppKernel implements \Serializable
             } catch (PathPermissionException $e) {
                 trigger_error('Cache directory is not writable; Cannot cache configuration', E_USER_WARNING);
             } catch (PathException $e) {
-                if ($this->dev) {
-                    ErrorHandler::Exception2Error($e);
-                }
-
+                $this->errorHandler->triggerIfDebug($e, E_USER_WARNING);
                 trigger_error('Failed to write cached configuration file', E_USER_WARNING);
             }
         }

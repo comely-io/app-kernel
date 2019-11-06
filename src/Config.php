@@ -72,9 +72,7 @@ class Config
                 ->evalBooleans(true)
                 ->generate();
         } catch (\Exception $e) {
-            if ($appKernel->dev()) {
-                ErrorHandler::Exception2Error($e);
-            }
+            $appKernel->errorHandler()->triggerIfDebug($e, E_USER_WARNING);
 
             if ($e instanceof PathNotExistException) {
                 throw new AppConfigException(sprintf('Configuration file for env "%s" does not exist', $env));

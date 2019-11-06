@@ -38,7 +38,7 @@ class Screen
     private $version;
     /** @var bool */
     private $dev;
-    /** @var ErrorLog */
+    /** @var array */
     private $errors;
     /** @var int */
     private $pathOffset;
@@ -56,7 +56,7 @@ class Screen
     {
         $this->version = AppKernel::VERSION;
         $this->dev = $dev;
-        $this->errors = $errors;
+        $this->errors = $dev ? $errors->all() : $errors->triggered()->array();
         $this->pathOffset = $pathOffset;
         $this->siteTitle = $siteTitle;
     }
@@ -272,9 +272,9 @@ class Screen
                                 <i class="icon ion-bug"></i>
                                 Triggered Errors
                             </div>
-                            <?php if ($this->errors->count()) { ?>
+                            <?php if (count($this->errors)) { ?>
                                 <ul class="list-group">
-                                    <?php foreach ($this->errors->triggered() as $error) {
+                                    <?php foreach ($this->errors as $error) {
                                         ?>
                                         <li class="list-group-item">
                                             <?php printf(
