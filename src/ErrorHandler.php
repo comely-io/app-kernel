@@ -14,7 +14,12 @@ declare(strict_types=1);
 
 namespace Comely\App;
 
+use Comely\App\ErrorHandler\ErrorLog;
+use Comely\App\ErrorHandler\ErrorMsg;
 use Comely\App\ErrorHandler\Screen;
+use Comely\App\Traits\NoDumpTrait;
+use Comely\App\Traits\NotCloneableTrait;
+use Comely\App\Traits\NotSerializableTrait;
 
 /**
  * Class ErrorHandler
@@ -24,10 +29,14 @@ class ErrorHandler
 {
     /** @var AppKernel */
     private $appKernel;
-    /** @var array */
+    /** @var ErrorLog */
     private $errors;
     /** @var int */
     private $pathOffset;
+
+    use NoDumpTrait;
+    use NotCloneableTrait;
+    use NotSerializableTrait;
 
     /**
      * @param \Exception $e
@@ -45,7 +54,7 @@ class ErrorHandler
     public function __construct(AppKernel $appKernel)
     {
         $this->appKernel = $appKernel;
-        $this->errors = [];
+        $this->errors = new ErrorLog();
         $this->pathOffset = strlen($appKernel->dirs()->root()->path());
 
         set_error_handler([$this, "handleError"]);
@@ -53,19 +62,11 @@ class ErrorHandler
     }
 
     /**
-     * @return array
+     * @return ErrorLog
      */
-    public function errors(): array
+    public function errors(): ErrorLog
     {
         return $this->errors;
-    }
-
-    /**
-     * @return void
-     */
-    public function flush(): void
-    {
-        $this->errors = [];
     }
 
     /**
@@ -74,6 +75,29 @@ class ErrorHandler
     public function handleThrowable(\Throwable $ex): void
     {
         $this->screen($ex);
+    }
+
+    /**
+     * @param string $message
+     * @param int $type
+     */
+    public function triggerIfDebug(string $message, int $type = E_USER_NOTICE): void
+    {
+        if (!in_array($type, [E_USER_NOTICE, E_USER_WARNING])) {
+            throw new \InvalidArgumentException('Invalid triggered error type');
+        }
+
+        $debugBacktrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1);
+        $file = strval($debugBacktrace[0]["file"] ?? "");
+        $line = intval($debugBacktrace[0]["line"] ?? -1);
+
+        $error = new ErrorMsg();
+        $error->type = $this->type($type);
+        $error->message = $message;
+        $error->file = $this->filePath($file);
+        $error->line = $line;
+        $error->triggered = $this->appKernel->dev() ? true : false;
+        $this->errors->append($error);
     }
 
     /**
@@ -89,14 +113,13 @@ class ErrorHandler
 
         // Check if error can be handled
         if (in_array($type, [2, 8, 512, 1024, 2048, 8192, 16384])) {
-            $error = [
-                "type" => $this->type($type),
-                "message" => $message,
-                "file" => $this->filePath($file),
-                "line" => $line
-            ];
-
-            $this->errors[] = $error;
+            $error = new ErrorMsg();
+            $error->type = $this->type($type);
+            $error->message = $message;
+            $error->file = $this->filePath($file);
+            $error->line = $line;
+            $error->triggered = true;
+            $this->errors->append($error);
         } else {
             // Proceed to shutdown screen
             try {
@@ -173,4 +196,5 @@ class ErrorHandler
                 return "Unknown";
         }
     }
+
 }

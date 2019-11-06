@@ -38,7 +38,7 @@ class Screen
     private $version;
     /** @var bool */
     private $dev;
-    /** @var array */
+    /** @var ErrorLog */
     private $errors;
     /** @var int */
     private $pathOffset;
@@ -48,11 +48,11 @@ class Screen
     /**
      * Screen constructor.
      * @param bool $dev
-     * @param array $errors
+     * @param ErrorLog $errors
      * @param int $pathOffset
      * @param string|null $siteTitle
      */
-    public function __construct(bool $dev, array $errors, int $pathOffset, ?string $siteTitle)
+    public function __construct(bool $dev, ErrorLog $errors, int $pathOffset, ?string $siteTitle)
     {
         $this->version = AppKernel::VERSION;
         $this->dev = $dev;
@@ -272,17 +272,17 @@ class Screen
                                 <i class="icon ion-bug"></i>
                                 Triggered Errors
                             </div>
-                            <?php if (count($this->errors)) { ?>
+                            <?php if ($this->errors->count()) { ?>
                                 <ul class="list-group">
-                                    <?php foreach ($this->errors as $error) {
+                                    <?php foreach ($this->errors->triggered() as $error) {
                                         ?>
                                         <li class="list-group-item">
                                             <?php printf(
                                                 '[%s] %s in file <u>%s</u> on line # <u>%d</u>',
-                                                strtoupper(strval($error["type"] ?? "")),
-                                                $error["message"] ?? "",
-                                                $error["file"] ?? "",
-                                                intval($error["line"] ?? -1)
+                                                strtoupper(strval($error->type)),
+                                                $error->message,
+                                                $error->file,
+                                                $error->line ?? -1
                                             ); ?>
                                         </li>
                                         <?php
