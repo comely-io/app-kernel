@@ -43,7 +43,7 @@ abstract class API_Controller extends AbstractAppController
         $controllerMethod = $httpRequestMethod;
 
         // Explicit method name
-        if(static::EXPLICIT_METHOD_NAMES) {
+        if (static::EXPLICIT_METHOD_NAMES) {
             $queryStringMethod = explode("&", $this->request()->url()->query() ?? "")[0];
             if (preg_match('/^\w+$/', $queryStringMethod)) {
                 $controllerMethod .= OOP::PascalCase($queryStringMethod);
@@ -85,8 +85,12 @@ abstract class API_Controller extends AbstractAppController
             }
         }
 
-        if ($this->app->dev()) {
-            $this->response()->set("errors", $this->app->errorHandler()->errors()); // Errors
+        $displayErrors = $this->app->dev() ?
+            $this->app->errorHandler()->errors()->all() :
+            $this->app->errorHandler()->errors()->triggered()->array();
+
+        if ($displayErrors) {
+            $this->response()->set("errors", $displayErrors); // Errors
         }
 
         $this->onFinish(); // Event callback: onFinish

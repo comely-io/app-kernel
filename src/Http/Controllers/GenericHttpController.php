@@ -107,8 +107,12 @@ abstract class GenericHttpController extends AbstractAppController
         }
 
         $this->response()->set("messages", $this->messages->array()); // Messages
-        if ($this->app->dev()) {
-            $this->response()->set("errors", $this->app->errorHandler()->errors()); // Errors
+
+        $displayErrors = $this->app->dev() ?
+            $this->app->errorHandler()->errors()->all() :
+            $this->app->errorHandler()->errors()->triggered()->array();
+        if ($displayErrors) {
+            $this->response()->set("errors", $displayErrors); // Errors
         }
 
         // Set flash messages in session
@@ -353,8 +357,12 @@ abstract class GenericHttpController extends AbstractAppController
                 "site" => $this->app->config()->site()->array()
             ];
 
+            $displayErrors = $this->app->dev() ?
+                $this->app->errorHandler()->errors()->all() :
+                $this->app->errorHandler()->errors()->triggered()->array();
+
             $template->assign("flashMessages", $flashMessages ?? []);
-            $template->assign("errors", $this->app->errorHandler()->errors());
+            $template->assign("errors", $displayErrors);
             $template->assign("config", $config);
             $template->assign("remote", $this->remote());
 

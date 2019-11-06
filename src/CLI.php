@@ -90,8 +90,8 @@ class CLI extends \Comely\CLI\CLI
         $this->events()->afterExec()->listen(function () {
             $displayErrors = @constant($this->execClassName . "::DISPLAY_TRIGGERED_ERRORS") ?? true;
             if ($displayErrors) {
-                $errors = $this->app()->errorHandler()->errors();
-                $errorsCount = count($errors);
+                $errors = $this->app()->errorHandler()->errors()->all();
+                $errorsCount = $this->app->errorHandler()->errors()->count();
 
                 $this->print("");
                 if ($errorsCount) {
