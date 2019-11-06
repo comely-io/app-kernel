@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Comely\App\Http\Controllers;
 
 use Comely\App\AppKernel;
+use Comely\App\ErrorHandler;
 use Comely\App\Http\Remote;
 use Comely\Http\Router\AbstractController;
 
@@ -26,6 +27,14 @@ abstract class AbstractAppController extends AbstractController
 {
     /** @var AppKernel */
     protected $app;
+
+    /**
+     * @return ErrorHandler
+     */
+    public function errorHandler(): ErrorHandler
+    {
+        return $this->app->errorHandler();
+    }
 
     /**
      * @return void
