@@ -68,7 +68,7 @@ class Validator
             $flags = FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6;
         }
 
-        return filter_var($ip, FILTER_VALIDATE_IP, $flags);
+        return filter_var($ip, FILTER_VALIDATE_IP, $flags) ? true : false;
     }
 
     /**
