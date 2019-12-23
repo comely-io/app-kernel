@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Comely\App;
 
+use Comely\App\ErrorHandler\ErrorMsg;
 use Comely\CLI\Abstract_CLI_Script;
 use Comely\CLI\ASCII\Banners;
 use Comely\Filesystem\Directory;
@@ -98,11 +99,12 @@ class CLI extends \Comely\CLI\CLI
                     $this->repeat(".", 10, 50, true);
                     $this->print("");
                     $this->print(sprintf("{red}{invert} %d {/}{red}{b} triggered errors!{/}", $errorsCount));
+                    /** @var ErrorMsg $error */
                     foreach ($errors as $error) {
-                        $this->print(sprintf('{grey}│  ┌ {/}{yellow}Type:{/} {magenta}%s{/}', strtoupper($error["type"])));
-                        $this->print(sprintf('{grey}├──┼ {/}{yellow}Message:{/} %s', $error["message"]));
-                        $this->print(sprintf("{grey}│  ├ {/}{yellow}File:{/} {cyan}%s{/}", $error["file"]));
-                        $this->print(sprintf("{grey}│  └ {/}{yellow}Line:{/} %d", $error["line"] ?? -1));
+                        $this->print(sprintf('{grey}│  ┌ {/}{yellow}Type:{/} {magenta}%s{/}', strtoupper($error->type)));
+                        $this->print(sprintf('{grey}├──┼ {/}{yellow}Message:{/} %s', $error->message));
+                        $this->print(sprintf("{grey}│  ├ {/}{yellow}File:{/} {cyan}%s{/}", $error->file));
+                        $this->print(sprintf("{grey}│  └ {/}{yellow}Line:{/} %d", $error->line ?? -1));
                         $this->print("{grey}│{/}");
                     }
 
